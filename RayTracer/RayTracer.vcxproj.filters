@@ -23,5 +23,38 @@
     <ClInclude Include="vec3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hitable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hitablelist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pointlight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="directionallight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
