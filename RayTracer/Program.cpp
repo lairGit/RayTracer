@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <stdlib.h>
+#include <chrono>
 #include "sphere.h"
 #include "hitablelist.h"
 #include "float.h"
@@ -79,8 +80,9 @@ hitable* random_scene()
 }
 
 int main() {
-	int nx = 160;
-	int ny = 100;
+	auto start_time = std::chrono::system_clock::now();
+	int nx = 720;
+	int ny = 400;
 	int ns = 100;
 	std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 	srand(time(NULL));
@@ -91,6 +93,7 @@ int main() {
 	list[2] = new sphere(vec3(1, 0, -1), 0.5, new metal(vec3(0.8, 0.6, 0.2), 0.15));
 	list[3] = new sphere(vec3(-1, 0, -1), 0.5, new dielectric(1.5));
 	hitable* world = random_scene();
+	//hitable* world = new hitable_list(list, 4);
 
 	light* lights[3];
 	lights[0] = new directionallight(vec3(1, -1, -1), vec3(0.7, 0.7, 0.7), 1);
@@ -98,19 +101,25 @@ int main() {
 	lights[2] = new pointlight(vec3(1, 0, -0.5), vec3(0, 0, 1), 1.0);
 
 	vec3 lookfrom(12, 1.5, 3);
-	vec3 lookat(0, 0, 0);
-	camera cam(lookfrom, lookat, vec3(0,1,0), 25, float(nx)/float(ny), 0, (lookfrom - lookat).length());
+	vec3 lookat(4, 1, 1);
+	//vec3 lookfrom(6, 1, 1);
+	//vec3 lookat(0, 0, 0);
+	camera cam(lookfrom, lookat, vec3(0,1,0), 25, float(nx)/float(ny), 0.1, (lookfrom - lookat).length());
 
 	for (int j = ny - 1; j >= 0; j--) {
 		for (int i = 0; i < nx; i++) {
 			vec3 col(0, 0, 0);
-			for (int s = 0; s < ns; s++) {
-				float u = float(i + random0to1()) / float(nx);
-				float v = float(j + random0to1()) / float(ny);
-				ray r = cam.get_ray(u, v);
-				vec3 p = r.point_at_parameter(2.0);
-				col += color(r, world, 0);
-				//col += colorWithLights(r, world, lights, 3);
+
+			#pragma omp parallel
+			{
+				#pragma omp for
+				for (int s = 0; s < ns; s++) {
+					float u = float(i + random0to1()) / float(nx);
+					float v = float(j + random0to1()) / float(ny);
+					ray r = cam.get_ray(u, v);
+					col += color(r, world, 0);
+					//col += colorWithLights(r, world, lights, 3);
+				}
 			}
 
 			col /= float(ns);
@@ -121,4 +130,8 @@ int main() {
 			std::cout << ir << " " << ig << " " << ib << "\n";
 		}
 	}
+
+	auto stop_time = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_time = stop_time - start_time;
+	//std::cout << "Elapsed seconds: " << elapsed_time.count() << "s\n";
 }
